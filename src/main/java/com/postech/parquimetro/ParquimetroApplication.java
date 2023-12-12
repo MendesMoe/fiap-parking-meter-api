@@ -10,5 +10,4 @@ public class ParquimetroApplication {
 		SpringApplication.run(ParquimetroApplication.class, args);
 		System.out.println("Ola mundinhoooo");
 	}
-
 }

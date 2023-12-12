@@ -22,7 +22,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private CustomerRepository customerRepository;
 
-    //Methodo da classe OncePerRequestFilter, uma vez para cada requete ele cria um filtro e depois chama outro.
+    //Metodo da classe OncePerRequestFilter, uma vez para cada requete ele cria um filtro e depois chama outro.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var tokenJWT = getToken(request);
