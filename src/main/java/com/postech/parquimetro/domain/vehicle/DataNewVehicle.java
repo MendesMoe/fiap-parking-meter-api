@@ -4,9 +4,9 @@ import com.postech.parquimetro.domain.customer.Customer;
 import jakarta.validation.constraints.NotNull;
 
 public record DataNewVehicle(
-        String Name,
+        String name,
         @NotNull
-        String LicensePlate,
+        String licenseplate,
         @NotNull
-        Long CustomerID
+        Long customerid
 ) {}

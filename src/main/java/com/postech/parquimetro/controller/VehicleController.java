@@ -29,7 +29,7 @@ public class VehicleController {
     @Transactional
     public ResponseEntity createVehicle(@RequestBody @Valid DataNewVehicle data){
 
-        Customer customer = customerRepository.findById(data.CustomerID())
+        Customer customer = customerRepository.findById(data.customerid())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
         var vehicle = new Vehicle(data);
