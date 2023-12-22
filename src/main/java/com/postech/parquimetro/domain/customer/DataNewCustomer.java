@@ -17,7 +17,5 @@ public record DataNewCustomer(
         String email,
         @NotBlank
         String phone
-
-
 ) {
 }

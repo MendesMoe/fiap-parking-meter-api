@@ -18,19 +18,19 @@ import org.hibernate.validator.constraints.UniqueElements;
 public class Vehicle {
 
     @Id
-    @Column(name = "LicensePlate")
-    private String licensePlate;
+    @Column(name = "Licenseplate")
+    private String licenseplate;
 
-    @Column(name = "Name")
+    @Column(name = "name")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="CustomerID")
+    @JoinColumn(name ="customerid")
     private Customer customer;
 
     public Vehicle(DataNewVehicle data) {
-        this.name = data.Name();
-        this.licensePlate = data.LicensePlate();
+        this.name = data.name();
+        this.licenseplate = data.licenseplate();
     }
 
     // Método para definir customer separadamente
