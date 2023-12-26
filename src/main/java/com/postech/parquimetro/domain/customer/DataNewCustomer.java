@@ -16,6 +16,7 @@ public record DataNewCustomer(
         @Email
         String email,
         @NotBlank
-        String phone
+        String phone,
+        int paymentpreferenceid
 ) {
 }

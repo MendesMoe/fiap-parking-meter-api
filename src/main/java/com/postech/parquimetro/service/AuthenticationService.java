@@ -1,5 +1,6 @@
-package com.postech.parquimetro.domain.customer;
+package com.postech.parquimetro.service;
 
+import com.postech.parquimetro.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

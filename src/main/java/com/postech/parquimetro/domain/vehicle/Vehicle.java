@@ -1,40 +1,26 @@
 package com.postech.parquimetro.domain.vehicle;
 
 import com.postech.parquimetro.domain.customer.Customer;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Table(name="vehicle")
-@Entity(name="Vehicle")
+@Data
+@Document
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "LicensePlate")
 public class Vehicle {
 
-    @Id
-    @Column(name = "Licenseplate")
+//é a key primary
     private String licenseplate;
 
-    @Column(name = "name")
     private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="customerid")
+//@Field, que permite especificar como uma propriedade se relaciona com um campo no documento
     private Customer customer;
 
     public Vehicle(DataNewVehicle data) {
         this.name = data.name();
         this.licenseplate = data.licenseplate();
-    }
-
-    // Método para definir customer separadamente
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 }

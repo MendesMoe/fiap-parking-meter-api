@@ -1,11 +1,8 @@
 package com.postech.parquimetro.controller;
 
-import com.postech.parquimetro.domain.customer.Customer;
-import com.postech.parquimetro.domain.customer.CustomerRepository;
+import com.postech.parquimetro.repository.CustomerRepository;
 import com.postech.parquimetro.domain.vehicle.DataNewVehicle;
-import com.postech.parquimetro.domain.vehicle.Vehicle;
-import com.postech.parquimetro.domain.vehicle.VehicleRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.postech.parquimetro.repository.VehicleRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +26,11 @@ public class VehicleController {
     @Transactional
     public ResponseEntity createVehicle(@RequestBody @Valid DataNewVehicle data){
 
-        Customer customer = customerRepository.findById(data.customerid())
-                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-
-        var vehicle = new Vehicle(data);
-        vehicle.setCustomer(customer);
-        repository.save(vehicle);
+        //Optional<Customer> customer = customerRepository.findById(data.customerid());
+//
+        //var vehicle = new Vehicle(data);
+        //vehicle.setCustomer(customer);
+        //repository.save(vehicle);
         return ResponseEntity.ok("ok");
     }
 }

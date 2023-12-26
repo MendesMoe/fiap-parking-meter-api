@@ -1,6 +1,6 @@
 package com.postech.parquimetro.infra.security;
 
-import com.postech.parquimetro.domain.customer.CustomerRepository;
+import com.postech.parquimetro.repository.CustomerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,21 +17,21 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenService;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private TokenService tokenService;
 
     //Metodo da classe OncePerRequestFilter, uma vez para cada requete ele cria um filtro e depois chama outro.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var tokenJWT = getToken(request);
 
-        if (tokenJWT != null) { // Se o user enviou um token, primeiro verifica se ele é valido e se ele for, autentica na marra o user
+        if (tokenJWT != null) {
             var subject = tokenService.getSubject(tokenJWT);
-            var user = customerRepository.findByLogin(subject);
+            var customer = customerRepository.findByLogin(subject);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(customer,null,customer.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

@@ -1,12 +1,10 @@
 package com.postech.parquimetro.domain.customer;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,17 +12,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Table(name="customer")
-@Entity(name="Customer")
-@Getter
+@Data
+@Document
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "customerID")
 public class Customer implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerID;
+    private String customerID;
 
     @NotNull
     private String login;
@@ -41,6 +36,10 @@ public class Customer implements UserDetails {
 
     private String phone;
 
+ //   // Field desnormalizada
+    //    private String paymentpreference;
+    //    private int paymentpreferenceid;
+
     public Customer(DataNewCustomer data) {
         this.login = data.login();
         this.password = data.password();
@@ -50,12 +49,16 @@ public class Customer implements UserDetails {
         this.address2 = data.address2();
         this.email = data.email();
         this.phone = data.phone();
+        //this.paymentpreferenceid = data.paymentpreferenceid();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
+    //public String getPaymentpreference() {
+    //        return paymentpreference;
+    //    }
     @Override
     public String getPassword() {
         return password;
