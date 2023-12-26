@@ -16,7 +16,7 @@ Este projeto foi desenvolvido utilizando:
 
 - Java 17
 - Spring Boot
-- MySQL Connector
+- Mongodb Connector
 - Spring Boot Starter Validation
 - Spring Boot Starter Data JPA
 - Spring Boot Starter Web
@@ -30,3 +30,22 @@ Este projeto foi desenvolvido utilizando:
 Instruções detalhadas sobre como configurar e executar o projeto localmente serão fornecidas em breve.
 
 --- (falar do docker, etc)
+
+Banco de dados MongoDB com Docker sem usuario nem senha: 
+````shell
+docker pull mongo
+docker run -d --name mongodb -p 27017:27017 mongo
+````
+Verifique que a sua imagem baixou e execute
+````shell
+docker ps
+````
+Verifique o nome do container e pode lancer : 
+````shell
+mongo --host localhost --port 27017
+````
+Quando a conexao for feita você pode visualisar as tables e criar a 'parquimetro'
+````shell
+show databases
+use parquimetro
+````
