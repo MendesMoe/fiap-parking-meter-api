@@ -46,7 +46,7 @@ public class TokenService {
 
     private Instant dateTimeExpiration() {
         return LocalDateTime.now()
-                .plusHours(2)
+                .plusHours(5)
                 .atZone(ZoneId.of("Europe/Paris"))
                 .toInstant();
     }

@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -45,18 +46,27 @@ public class CustomerServiceImpl implements CustomerService {
         var encryptedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encryptedPassword);
 
-        //get the vehicle in a reference before save in db
-        if(customer.getVehicle() != null) {
+        // Get the vehicles in a reference before saving in db
+        if(customer.getVehicles() != null && !customer.getVehicles().isEmpty()) {
+            List<Vehicle> updatedVehicles = customer.getVehicles().stream()
+                    .map(vehicle -> this.vehicleRepository.findById(vehicle.getLicenseplate())
+                            .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with license plate: " + vehicle.getLicenseplate())))
+                    .collect(Collectors.toList());
 
-            Vehicle vehicle = this.vehicleRepository
-                    .findById(customer.getVehicle().getLicenseplate())
-                    .orElseThrow(()-> new IllegalArgumentException("Vehicle not found"));
-
-            customer.setVehicle(vehicle);
+            customer.setVehicles(updatedVehicles);
         } else {
-            customer.setVehicle(null);
+            customer.setVehicles(new ArrayList<>()); // Set to empty list instead of null
         }
 
         return this.customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer update(Customer updateCustomer) {
+        return this.customerRepository.save(updateCustomer);
+    }
+    @Override
+    public void deleteById(String id){
+        this.customerRepository.deleteById(id);
     }
 }
