@@ -25,12 +25,6 @@ public class VehicleController {
     @PostMapping
     @Transactional
     public ResponseEntity createVehicle(@RequestBody @Valid DataNewVehicle data){
-
-        //Optional<Customer> customer = customerRepository.findById(data.customerid());
-//
-        //var vehicle = new Vehicle(data);
-        //vehicle.setCustomer(customer);
-        //repository.save(vehicle);
         return ResponseEntity.ok("ok");
     }
 }

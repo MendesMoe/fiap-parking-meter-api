@@ -56,9 +56,7 @@ public class Customer implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
-    //public String getPaymentpreference() {
-    //        return paymentpreference;
-    //    }
+
     @Override
     public String getPassword() {
         return password;
