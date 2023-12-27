@@ -34,7 +34,6 @@ public class CustomerController {
     }
 
     @PostMapping
-    @Transactional
     public ResponseEntity newCustomer(@RequestBody Customer customer,UriComponentsBuilder uriBuilder){
         customerService.create(customer);
       //  var uri = uriBuilder.path("customer/{customerID}").buildAndExpand(customer.getCustomerID()).toUri();
