@@ -1,14 +1,17 @@
 package com.postech.parquimetro.domain.customer;
 
+import com.postech.parquimetro.domain.vehicle.Vehicle;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,20 +39,15 @@ public class Customer implements UserDetails {
 
     private String phone;
 
- //   // Field desnormalizada
-    //    private String paymentpreference;
-    //    private int paymentpreferenceid;
+    @DBRef
+    private List<Vehicle> vehicles = new ArrayList<>();
 
-    public Customer(DataNewCustomer data) {
-        this.login = data.login();
-        this.password = data.password();
-        this.firstname = data.firstname();
-        this.lastname = data.lastname();
-        this.address1 = data.address1();
-        this.address2 = data.address2();
-        this.email = data.email();
-        this.phone = data.phone();
-        //this.paymentpreferenceid = data.paymentpreferenceid();
+    public List<Vehicle> getVehicles() {
+        return this.vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicle) {
+        this.vehicles = vehicle;
     }
 
     @Override

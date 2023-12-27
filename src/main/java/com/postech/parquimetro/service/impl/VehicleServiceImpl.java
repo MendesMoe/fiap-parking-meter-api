@@ -1,13 +1,14 @@
 package com.postech.parquimetro.service.impl;
 
-import com.postech.parquimetro.domain.vehicle.DataNewVehicle;
 import com.postech.parquimetro.domain.vehicle.Vehicle;
 import com.postech.parquimetro.repository.VehicleRepository;
 import com.postech.parquimetro.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class VehicleServiceImpl implements VehicleService {
 
     @Autowired
@@ -15,16 +16,20 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getAll() {
-        return null;
+
+        return this.repository.findAll();
     }
 
     @Override
-    public Vehicle getByCustomer(String id) {
-        return null;
+    public Vehicle create(Vehicle vehicle) {
+
+        return this.repository.save(vehicle);
     }
 
     @Override
-    public Vehicle create(DataNewVehicle data) {
-        return null;
+    public Vehicle getById(String licenseplate) {
+        return this.repository.findById(licenseplate)
+                .orElseThrow(()-> new IllegalArgumentException("The Vehicle has not found"));
     }
+
 }

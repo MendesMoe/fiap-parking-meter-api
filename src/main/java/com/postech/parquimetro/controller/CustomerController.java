@@ -37,6 +37,18 @@ public class CustomerController {
     public ResponseEntity newCustomer(@RequestBody Customer customer,UriComponentsBuilder uriBuilder){
         customerService.create(customer);
       //  var uri = uriBuilder.path("customer/{customerID}").buildAndExpand(customer.getCustomerID()).toUri();
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("create ok");
+    }
+
+    @PutMapping
+    public ResponseEntity update(@RequestBody Customer customer){
+        customerService.update(customer);
+        return ResponseEntity.ok("update ok");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteById(@PathVariable String id){
+        this.customerService.deleteById(id);
+        return ResponseEntity.ok("delete ok");
     }
 }
