@@ -31,6 +31,8 @@ public class Customer implements UserDetails {
     @NotNull
     private String password;
     private String firstname;
+
+    @NotNull
     private String lastname;
     private String address1;
     private String address2;
@@ -40,6 +42,7 @@ public class Customer implements UserDetails {
 
     private String phone;
 
+    @NotNull
     private PaymentMethod paymentPreference;
 
     @DBRef

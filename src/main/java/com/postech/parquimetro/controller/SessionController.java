@@ -30,4 +30,16 @@ public class SessionController {
     public List<ParkingSession> getByCustomer(@PathVariable String customerID) {
         return this.sessionService.getByCustomer(customerID);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteById(@PathVariable String id){
+        this.sessionService.deleteById(id);
+        return ResponseEntity.ok("delete ok");
+    }
+
+    @PutMapping
+    public ResponseEntity update(@RequestBody ParkingSession updateSession){
+        this.sessionService.update(updateSession);
+        return ResponseEntity.ok("updated session");
+    }
 }

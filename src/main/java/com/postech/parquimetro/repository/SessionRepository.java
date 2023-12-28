@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends MongoRepository<ParkingSession, Long> {
     public List<ParkingSession> findByCustomer(Customer customer);
+
+    public void deleteById(String id);
 }

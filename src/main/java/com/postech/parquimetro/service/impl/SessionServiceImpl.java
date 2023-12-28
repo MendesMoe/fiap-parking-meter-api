@@ -71,4 +71,14 @@ public class SessionServiceImpl implements SessionService {
     public ParkingSession toEndTheSession(String id) {
         return null;
     }
+
+    @Override
+    public ParkingSession update(ParkingSession updateSession) {
+        return this.sessionRepository.save(updateSession);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        this.sessionRepository.deleteById(id);
+    }
 }
