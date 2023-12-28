@@ -1,5 +1,6 @@
 package com.postech.parquimetro.domain.customer;
 
+import com.postech.parquimetro.domain.enums.PaymentMethod;
 import com.postech.parquimetro.domain.vehicle.Vehicle;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -38,6 +39,8 @@ public class Customer implements UserDetails {
     private String email;
 
     private String phone;
+
+    private PaymentMethod paymentPreference;
 
     @DBRef
     private List<Vehicle> vehicles = new ArrayList<>();
