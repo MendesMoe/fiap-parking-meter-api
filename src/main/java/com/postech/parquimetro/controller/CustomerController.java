@@ -30,19 +30,19 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public Customer getById(@PathVariable String id) {
-        return customerService.getOneById(id);
+        return this.customerService.getOneById(id);
     }
 
     @PostMapping
     public ResponseEntity newCustomer(@RequestBody Customer customer,UriComponentsBuilder uriBuilder){
-        customerService.create(customer);
+        this.customerService.create(customer);
       //  var uri = uriBuilder.path("customer/{customerID}").buildAndExpand(customer.getCustomerID()).toUri();
         return ResponseEntity.ok("create ok");
     }
 
     @PutMapping
     public ResponseEntity update(@RequestBody Customer customer){
-        customerService.update(customer);
+        this.customerService.update(customer);
         return ResponseEntity.ok("update ok");
     }
 
