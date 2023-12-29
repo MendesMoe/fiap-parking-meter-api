@@ -12,6 +12,7 @@ import com.postech.parquimetro.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,16 +35,16 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public ParkingSession create(ParkingSession parkingSession) {
+    public ParkingSession create(ParkingSession parkingSession) throws ValidationException {
 
         //check s'il a un customer avec cet id
         Customer customer = this.customerRepository.findById(parkingSession.getCustomer().getCustomerID())
                         .orElseThrow(() -> new IllegalArgumentException("Customer not found with the ID: " + parkingSession.getCustomer().getCustomerID()));
         parkingSession.setCustomer(customer);
 
-        //Se a forma de pagamento do customer é PIX, ele nao pode escolher o FREE_TIME, entao nos ja fazemos set pra ele.
-        if (customer.getPaymentPreference() != null && customer.getPaymentPreference() == PaymentMethod.PIX) {
-            parkingSession.setSessionType(SessionType.FIXED_TIME);
+        //Se a forma de pagamento do customer é PIX, ele nao pode escolher o FREE_TIME, entao nos ja fazemos set pra ele. //customer.getPaymentPreference() != null && customer.getPaymentPreference() == PaymentMethod.PIX
+        if (parkingSession.getSessionType() == SessionType.FREE_TIME && parkingSession.getPaymentMethod() == PaymentMethod.PIX) {
+            //throw new ValidationException("hh"); // return uma explicacao
         }
 
         //check s'il existe un vehicule avec la plaque d'immatriculation informée

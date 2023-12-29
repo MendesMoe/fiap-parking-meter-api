@@ -4,6 +4,7 @@ import com.postech.parquimetro.domain.customer.Customer;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @Service
@@ -11,7 +12,7 @@ public interface SessionService {
 
     public List<ParkingSession> getAll();
 
-    public ParkingSession create(ParkingSession parkingSession);
+    public ParkingSession create(ParkingSession parkingSession) throws ValidationException;
 
     public ParkingSession getById(Long id);
 

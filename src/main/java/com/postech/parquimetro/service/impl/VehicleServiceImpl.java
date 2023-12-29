@@ -20,10 +20,12 @@ public class VehicleServiceImpl implements VehicleService {
         return this.repository.findAll();
     }
 
-    @Override
+    @Override // incluir um pathvariable com o id do customer
     public Vehicle create(Vehicle vehicle) {
 
         return this.repository.save(vehicle);
+
+        // junto com as informacoes do novo carro, eu preciso do id cliente para fazer a relacao.
     }
 
     @Override
