@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class SessionController {
     @Operation(summary = "Create a new session for a customer and a vehicle", responses = {
             @ApiResponse(description = "The session has been created", responseCode = "200")
     })
-    public ResponseEntity create(@RequestBody ParkingSession parkingSession){
+    public ResponseEntity create(@RequestBody ParkingSession parkingSession) throws ValidationException {
         this.sessionService.create(parkingSession);
         return ResponseEntity.ok("session created");
     }
