@@ -4,6 +4,8 @@ import com.postech.parquimetro.domain.customer.Customer;
 import com.postech.parquimetro.domain.customer.DataAuth;
 import com.postech.parquimetro.infra.security.DataTokenJWT;
 import com.postech.parquimetro.infra.security.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping
+    @Operation(summary = "Authentication with the login and password by customer", responses = {
+            @ApiResponse(description = "Baerer token for requests", responseCode = "200")
+    })
     public ResponseEntity login(@RequestBody @Valid DataAuth data) {
         try {
             var authToken = new UsernamePasswordAuthenticationToken(data.login(), data.password());

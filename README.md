@@ -20,16 +20,12 @@ Este projeto foi desenvolvido utilizando:
 - Spring Boot Starter Validation
 - Spring Boot Starter Data JPA
 - Spring Boot Starter Web
-- Flyway para migrações de banco de dados
 - Lombok para redução de boilerplate em modelos Java
 - Spring Boot Starter Security para autenticação e segurança
 - Java JWT para implementação de autenticação com tokens JWT
+- SpringDoc para a criacao da documentacao da API
 
 ## Como Executar
-
-Instruções detalhadas sobre como configurar e executar o projeto localmente serão fornecidas em breve.
-
---- (falar do docker, etc)
 
 Banco de dados MongoDB com Docker sem usuario nem senha: 
 ````shell
@@ -40,7 +36,7 @@ Verifique que a sua imagem baixou e execute
 ````shell
 docker ps
 ````
-Verifique o nome do container e pode lancer : 
+Verifique o nome do container e pode lancar : 
 ````shell
 mongo --host localhost --port 27017
 ````
@@ -49,3 +45,21 @@ Quando a conexao for feita você pode visualisar as tables e criar a 'parquimetr
 show databases
 use parquimetro
 ````
+## Documentação
+
+A documentação detalhada da API está acessível na URL:
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+## Segurança
+
+As rotas "/login" e "/customer" não requerem token para uso. Abaixo estão os passos para o uso da API:
+
+1. **Criação de um Customer**:
+    - Utilize a rota POST `/customer` para criar um novo usuário fornecendo `login` e `password`.
+
+2. **Autenticação para Recuperação do Token**:
+    - Faça uma requisição na rota `/login` para autenticar e recuperar o token Bearer.
+
+3. **Uso do Token**:
+    - Utilize o token fornecido durante o login para acessar as demais rotas da API. O token deve ser incluído no cabeçalho da requisição.
+    
