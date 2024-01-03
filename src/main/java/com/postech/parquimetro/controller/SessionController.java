@@ -18,6 +18,12 @@ public class SessionController {
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private TaskScheduler taskScheduler;
+
     @GetMapping
     @Operation(summary = "Get the sessions list", responses = {
             @ApiResponse(description = "List of sessions", responseCode = "200")
@@ -30,8 +36,15 @@ public class SessionController {
     @Operation(summary = "Create a new session for a customer and a vehicle", responses = {
             @ApiResponse(description = "The session has been created", responseCode = "200")
     })
-    public ResponseEntity create(@RequestBody ParkingSession parkingSession) throws ValidationException {
-        this.sessionService.create(parkingSession);
+    public ResponseEntity create(@RequestBody ParkingSession parkingSession){
+        ParkingSession session = this.sessionService.create(parkingSession);
+        System.out.println("session criada");
+        System.out.println(session);
+
+        Message message = new Message(("New parking session id: " + session.getId() + " type: " + session.getSessionType()).getBytes());
+        rabbitTemplate.send("estacionamento.criado", message);
+
+        // nous avons besoin de l'heure de fin choisi par le customer dans la table session, si le type est FIXED
         return ResponseEntity.ok("session created");
     }
 
