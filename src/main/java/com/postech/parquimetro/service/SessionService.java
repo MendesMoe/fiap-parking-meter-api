@@ -1,6 +1,5 @@
 package com.postech.parquimetro.service;
 
-import com.postech.parquimetro.domain.customer.Customer;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import org.springframework.stereotype.Service;
 
