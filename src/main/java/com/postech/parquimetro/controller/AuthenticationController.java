@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     @PostMapping
     @Operation(summary = "Authentication with the login and password by customer", responses = {
-            @ApiResponse(description = "Baerer token for requests", responseCode = "200")
+            @ApiResponse(description = "Bearer token for requests", responseCode = "200")
     })
     public ResponseEntity login(@RequestBody @Valid DataAuth data) {
         try {
