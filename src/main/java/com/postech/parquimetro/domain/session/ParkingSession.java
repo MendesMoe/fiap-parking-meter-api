@@ -5,9 +5,7 @@ import com.postech.parquimetro.domain.enums.PaymentMethod;
 import com.postech.parquimetro.domain.enums.SessionType;
 import com.postech.parquimetro.domain.vehicle.Vehicle;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -45,4 +43,18 @@ public class ParkingSession {
     private Double price;
 
     private Integer status;
+
+    public ParkingSessionDTO convertToDTO() {
+        return new ParkingSessionDTO(
+                this.id,
+                this.customer != null ? this.customer.getId() : null,
+                this.vehicle != null ? this.vehicle.getLicenseplate() : null,
+                this.paymentMethod,
+                this.sessionType,
+                this.startSession,
+                this.endSession,
+                this.price,
+                this.status
+        );
+    }
 }

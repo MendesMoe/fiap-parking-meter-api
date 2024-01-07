@@ -1,9 +1,11 @@
 package com.postech.parquimetro.controller;
 
 import com.postech.parquimetro.domain.session.ParkingSession;
+import com.postech.parquimetro.domain.session.ParkingSessionDTO;
 import com.postech.parquimetro.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +40,12 @@ public class SessionController {
     })
     public ResponseEntity create(@RequestBody ParkingSession parkingSession){
         ParkingSession session = this.sessionService.create(parkingSession);
-        System.out.println("session criada");
-        System.out.println(session);
+        ParkingSessionDTO sessionDTO = session.convertToDTO();
 
-        Message message = new Message(("New parking session id: " + session.getId() + " type: " + session.getSessionType()).getBytes());
-        rabbitTemplate.send("estacionamento.criado", message);
+        /////// Envio para o RabbitMQ para poder ser consumido por um outro micro servico ou servico nesta aplicacao, no caso, a de noificacao ///////
+        //Message message = new Message(("New parking session id: " + session.getId() + " type: " + session.getSessionType()).getBytes());
+        //Podemos enviar em bytes par default, mas é melhor usar o construtor que faz o convertAndSend para enviar um json e assim poder enviar a entidade ou melhor, um DTO
+        rabbitTemplate.convertAndSend("estacionamento.criado", sessionDTO);
 
         // nous avons besoin de l'heure de fin choisi par le customer dans la table session, si le type est FIXED
         return ResponseEntity.ok("session created");

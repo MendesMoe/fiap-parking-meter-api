@@ -71,6 +71,12 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<!-- O jackson2Json tem problemas com o LocalDateTime a partir do Java8, necessario uma lib para ajudar o object mapper -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
 
 	</dependencies>
 
