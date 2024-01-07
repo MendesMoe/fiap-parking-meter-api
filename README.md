@@ -24,6 +24,7 @@ Este projeto foi desenvolvido utilizando:
 - Spring Boot Starter Security para autenticação e segurança
 - Java JWT para implementação de autenticação com tokens JWT
 - SpringDoc para a criacao da documentacao da API
+- Spring Stream e RabbitMQ para o codigo reativo
 
 ## Como Executar
 
@@ -45,6 +46,21 @@ Quando a conexao for feita você pode visualisar as tables e criar a 'parquimetr
 show databases
 use parquimetro
 ````
+
+Ainda com Docker, podemos lançar RabbitMQ
+````shell
+docker pull rabbitmq
+````
+Ensuite executer avec
+`````shell
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
+`````
+Para ver o serviço rodando em uma interface, acessar a porta e entrar "guest" para usuario e senha
+````shell
+http://localhost:5672
+````
+Mais infos no dockerhub : 
+[https://hub.docker.com/_/rabbitmq]()
 ## Documentação
 
 A documentação detalhada da API está acessível na URL:
