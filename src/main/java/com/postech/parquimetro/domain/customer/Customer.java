@@ -1,5 +1,6 @@
 package com.postech.parquimetro.domain.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.postech.parquimetro.domain.enums.PaymentMethod;
 import com.postech.parquimetro.domain.vehicle.Vehicle;
 import jakarta.validation.constraints.Email;
@@ -17,6 +18,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @Document
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,9 +29,11 @@ public class Customer implements UserDetails {
     private String customerID;
 
     @NotNull
+    @JsonIgnore
     private String login;
 
     @NotNull
+    @JsonIgnore
     private String password;
     private String firstname;
 
@@ -46,6 +51,7 @@ public class Customer implements UserDetails {
     private PaymentMethod paymentPreference;
 
     @DBRef
+    @JsonIgnore
     private List<Vehicle> vehicles = new ArrayList<>();
 
     public List<Vehicle> getVehicles() {
@@ -88,5 +94,9 @@ public class Customer implements UserDetails {
 
     public void setPassword(String encryptedPassword) {
         this.password = encryptedPassword;
+    }
+
+    public String getId() {
+        return customerID;
     }
 }
