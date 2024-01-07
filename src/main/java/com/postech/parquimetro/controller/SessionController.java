@@ -1,5 +1,6 @@
 package com.postech.parquimetro.controller;
 
+import com.postech.parquimetro.domain.enums.SessionType;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import com.postech.parquimetro.domain.session.ParkingSessionDTO;
 import com.postech.parquimetro.service.SessionService;
@@ -23,9 +24,6 @@ public class SessionController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
-
     @GetMapping
     @Operation(summary = "Get the sessions list", responses = {
             @ApiResponse(description = "List of sessions", responseCode = "200")
@@ -38,16 +36,14 @@ public class SessionController {
     @Operation(summary = "Create a new session for a customer and a vehicle", responses = {
             @ApiResponse(description = "The session has been created", responseCode = "200")
     })
-    public ResponseEntity create(@RequestBody ParkingSession parkingSession){
+    public ResponseEntity create(@RequestBody ParkingSession parkingSession) throws ValidationException {
         ParkingSession session = this.sessionService.create(parkingSession);
         ParkingSessionDTO sessionDTO = session.convertToDTO();
 
-        /////// Envio para o RabbitMQ para poder ser consumido por um outro micro servico ou servico nesta aplicacao, no caso, a de noificacao ///////
-        //Message message = new Message(("New parking session id: " + session.getId() + " type: " + session.getSessionType()).getBytes());
-        //Podemos enviar em bytes par default, mas é melhor usar o construtor que faz o convertAndSend para enviar um json e assim poder enviar a entidade ou melhor, um DTO
-        rabbitTemplate.convertAndSend("estacionamento.criado", sessionDTO);
+        if (session.getSessionType() == SessionType.FIXED_TIME && session.getEndSession() != null) {
+            rabbitTemplate.convertAndSend("sessioncreated.ex", "", sessionDTO);
+        }
 
-        // nous avons besoin de l'heure de fin choisi par le customer dans la table session, si le type est FIXED
         return ResponseEntity.ok("session created");
     }
 

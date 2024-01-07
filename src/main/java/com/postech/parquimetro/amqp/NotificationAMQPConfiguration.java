@@ -3,7 +3,7 @@ package com.postech.parquimetro.amqp;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,10 +17,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class NotificationAMQPConfiguration {
 
+    //@Bean
+    //    public Queue createQueue(){
+    //        return new Queue("session.expiration", false);
+    //        //return QueueBuilder.nondurable().build("session.expiration");
+    //    }
+
     @Bean
-    public Queue createQueue(){
-        return new Queue("estacionamento.criado", false);
-        //return QueueBuilder.nondurable().build("estacionamento.criado");
+    public Queue sessionExpiration(){
+        return QueueBuilder.nonDurable("session.expiration").build();
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange(){
+        return ExchangeBuilder.fanoutExchange("session.expiration").build();
+    }
+
+    @Bean
+    public Binding sessionnotification(FanoutExchange fanoutExchange){
+        return BindingBuilder.bind(sessionExpiration())
+                .to(fanoutExchange);
+
     }
 
     @Bean
