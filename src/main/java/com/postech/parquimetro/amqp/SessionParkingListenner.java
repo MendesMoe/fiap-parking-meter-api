@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionParkingListenner {
 
-    //@RabbitListener(queues = "session.expiration")
-    //public void receiveMessage(ParkingSessionDTO sessionDTO) {
-       // System.out.println("Recebi a mensagem" + sessionDTO);
-    //}
+    @RabbitListener(queues = "session.expiration")
+    public void receiveMessage(ParkingSessionDTO sessionDTO) {
+        System.out.println("Recebi a mensagem" + sessionDTO);
+    }
 }

@@ -41,11 +41,28 @@ public class SessionController {
         ParkingSessionDTO sessionDTO = session.convertToDTO();
 
         if (session.getSessionType() == SessionType.FIXED_TIME && session.getEndSession() != null) {
-            rabbitTemplate.convertAndSend("sessioncreated.ex", "", sessionDTO);
+            //this.sendDelayedMessage(sessionDTO, 2000); definir o delay de acordo com o endSession se fixed ou com a proxima hora de FREE_TIME
         }
+
+        this.sendDelayedMessage(sessionDTO, 2000);
+
+        System.out.println("------ enviado !!!");
 
         return ResponseEntity.ok("session created");
     }
+
+    public void sendDelayedMessage(ParkingSessionDTO message, long delay) {
+        rabbitTemplate.convertAndSend(
+                "sessionExpireExchange",
+                "session.expiration",
+                message,
+                m -> {
+                    m.getMessageProperties().setDelay((int) delay);
+                    return m;
+                }
+        );
+    }
+
 
     @GetMapping("/{customerID}")
     @Operation(summary = "Get all sessions for a customer", responses = {
