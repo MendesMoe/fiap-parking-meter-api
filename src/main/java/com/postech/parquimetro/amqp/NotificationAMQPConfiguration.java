@@ -17,34 +17,40 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class NotificationAMQPConfiguration {
 
-    //@Bean
-    //    public Queue createQueue(){
-    //        return new Queue("session.expiration", false);
-    //        //return QueueBuilder.nondurable().build("session.expiration");
-    //    }
-
     @Bean
-    public Queue sessionExpiration(){
-        return QueueBuilder.nonDurable("session.expiration").build();
+    public Queue sessionExpirate(){
+        return QueueBuilder.durable("session.expiration").build();
+    }
+    @Bean
+    DirectExchange sessionExpireExchange() {
+        return new DirectExchange("sessionExpireExchange");
+    }
+    @Bean
+    Binding DLQbinding(Queue sessionExpirate, DirectExchange sessionExpireExchange) {
+        return BindingBuilder.bind(sessionExpirate).to(sessionExpireExchange).with("deadLetter");
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(){
-        return ExchangeBuilder.fanoutExchange("session.expiration").build();
+    Queue myQueue() {
+        return QueueBuilder.durable("myQueue")
+                .withArgument("x-dead-letter-exchange", "sessionExpireExchange")
+                .withArgument("x-dead-letter-routing-key", "deadLetter")
+                .build();
+    }
+    @Bean
+    DirectExchange myExchange() {
+        return new DirectExchange("myExchange");
     }
 
     @Bean
-    public Binding sessionnotification(FanoutExchange fanoutExchange){
-        return BindingBuilder.bind(sessionExpiration())
-                .to(fanoutExchange);
-
+    Binding binding(Queue myQueue, DirectExchange myExchange) {
+        return BindingBuilder.bind(myQueue).to(myExchange).with("myRoutingKey");
     }
 
     @Bean
     public RabbitAdmin createRabbitAdmin(ConnectionFactory con){
         return new RabbitAdmin(con);
     }
-
     @Bean
     public ApplicationListener<ApplicationReadyEvent> initAdmin(RabbitAdmin rabbitAdmin){
         return event -> rabbitAdmin.initialize();
