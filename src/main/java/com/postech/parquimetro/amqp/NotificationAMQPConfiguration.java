@@ -13,39 +13,47 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Configuration
 public class NotificationAMQPConfiguration {
 
     @Bean
-    public Queue sessionExpirate(){
-        return QueueBuilder.durable("session.expiration").build();
-    }
-    @Bean
-    DirectExchange sessionExpireExchange() {
-        return new DirectExchange("sessionExpireExchange");
-    }
-    @Bean
-    Binding DLQbinding(Queue sessionExpirate, DirectExchange sessionExpireExchange) {
-        return BindingBuilder.bind(sessionExpirate).to(sessionExpireExchange).with("deadLetter");
+    public Queue myQueue() {
+        return new Queue("myQueue", true);
     }
 
     @Bean
-    Queue myQueue() {
-        return QueueBuilder.durable("myQueue")
-                .withArgument("x-dead-letter-exchange", "sessionExpireExchange")
-                .withArgument("x-dead-letter-routing-key", "deadLetter")
-                .build();
-    }
-    @Bean
-    DirectExchange myExchange() {
-        return new DirectExchange("myExchange");
+    public CustomExchange delayedExchange() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-delayed-type", "direct");
+        return new CustomExchange("myDelayedExchange", "x-delayed-message", true, false, args);
     }
 
     @Bean
-    Binding binding(Queue myQueue, DirectExchange myExchange) {
-        return BindingBuilder.bind(myQueue).to(myExchange).with("myRoutingKey");
+    public Binding binding(Queue myQueue, CustomExchange delayedExchange) {
+        return BindingBuilder.bind(myQueue).to(delayedExchange).with("myRoutingKey").noargs();
     }
+
+
+    //  @Bean
+    //    Queue myQueue() {
+    //        return QueueBuilder.durable("myQueue")
+    //                .withArgument("x-dead-letter-exchange", "sessionExpireExchange")
+    //                .withArgument("x-dead-letter-routing-key", "deadLetter")
+    //                .build();
+    //    }
+    //    @Bean
+    //    DirectExchange myExchange() {
+    //        return new DirectExchange("myExchange");
+    //    }
+    //
+    //    @Bean
+    //    Binding binding(Queue myQueue, DirectExchange myExchange) {
+    //        return BindingBuilder.bind(myQueue).to(myExchange).with("myRoutingKey");
+    //    }
 
     @Bean
     public RabbitAdmin createRabbitAdmin(ConnectionFactory con){
