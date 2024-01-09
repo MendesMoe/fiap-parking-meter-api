@@ -47,8 +47,7 @@ public class SessionServiceImpl implements SessionService {
             //throw new ValidationException("hh"); // return uma explicacao
         }
 
-        //check s'il existe un vehicule avec la plaque d'immatriculation informée
-        Vehicle vehicle = this.vehicleService.getById(parkingSession.getVehicle().getLicenseplate()); //TODO check if the vehicle belongs to the customer ?
+        Vehicle vehicle = this.vehicleService.getById(parkingSession.getVehicle().getLicenseplate());
         parkingSession.setVehicle(vehicle);
 
         return this.sessionRepository.save(parkingSession);

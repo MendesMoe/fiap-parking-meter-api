@@ -44,23 +44,22 @@ public class SessionController {
             //this.sendDelayedMessage(sessionDTO, 2000); definir o delay de acordo com o endSession se fixed ou com a proxima hora de FREE_TIME
         }
 
-        this.sendDelayedMessage(sessionDTO, 2000);
+        //calcula menos 15 minutos antes do fim. Se a sessionEnd é 12h00, a gente vê que horas sao (por exemplo 11h10), calcula 15 minutos antes de 12h00 (11h45) e subtrai. 11h45 - 11h10 = 35 minutos e transforma em millisegundos
 
-        System.out.println("------ enviado !!!");
+        this.sendDelayedMessage(sessionDTO, 20000);
+
+        System.out.println("mensagem enviada, esperar 20 segundos e ela aparecera aqui => ");
+
+        // Agora aqui tem que chamar o serviço de envio de email passando o dto com as informacoes da sessao
 
         return ResponseEntity.ok("session created");
     }
 
-    public void sendDelayedMessage(ParkingSessionDTO message, long delay) {
-        rabbitTemplate.convertAndSend(
-                "sessionExpireExchange",
-                "session.expiration",
-                message,
-                m -> {
-                    m.getMessageProperties().setDelay((int) delay);
-                    return m;
-                }
-        );
+    public void sendDelayedMessage(ParkingSessionDTO messageSession, int delay) {
+        rabbitTemplate.convertAndSend("myDelayedExchange", "myRoutingKey", messageSession, message -> {
+            message.getMessageProperties().setDelay(delay);
+            return message;
+        });
     }
 
 
