@@ -57,7 +57,7 @@ public class SessionController {
             //calcula menos 15 minutos antes do fim. Se a sessionEnd é 12h00, a gente vê que horas sao (por exemplo 11h10), calcula 15 minutos antes de 12h00 (11h45) e subtrai. 11h45 - 11h10 = 35 minutos e transforma em millisegundos
             long delay = this.timeService.get15MinBeforeExpiration(sessionDTO);
             this.sendDelayedMessage(sessionDTO, (int) delay);
-            System.out.println("mensagem enviada SessionType.FIXED_TIME para rabbitMQ");
+            System.out.println("mensagem enviada SessionType.FIXED_TIME para rabbitMQ" + sessionDTO);
         }
 
         // Se for free, ele calcula +45 minutos a partir da hora de criacao e programa um envio para esta hora
@@ -107,7 +107,7 @@ public class SessionController {
     @Operation(summary = "End a session", responses = {
             @ApiResponse(description = "The session was closed", responseCode = "200")
     })
-    public ResponseEntity endSession(@PathVariable long sessionID) {
+    public ResponseEntity endSession(@PathVariable String sessionID) {
         ParkingSession parkingSession = this.sessionService.getById(sessionID);
         LocalDateTime now = LocalDateTime.now();
         parkingSession.setEndSession(now);

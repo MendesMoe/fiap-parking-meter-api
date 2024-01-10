@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record ParkingSessionDTO( // Criei o DTO para que seja mais simples passar esse DTO no rabbitTemplate, ao invés de varias infos desnecessarias
         String id,
         String customerId,
+        String customerMail,
         String vehicleId,
         PaymentMethod paymentMethod,
         SessionType sessionType,
