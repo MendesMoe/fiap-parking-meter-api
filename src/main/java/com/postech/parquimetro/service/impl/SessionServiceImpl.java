@@ -54,8 +54,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public ParkingSession getById(Long id) {
-        return this.sessionRepository.findById(id)
+    public ParkingSession getById(String id) {
+        return this.sessionRepository.findById(Long.valueOf(id))
                 .orElseThrow(()-> new IllegalArgumentException("The Session has not found with ID: " + id));
     }
 

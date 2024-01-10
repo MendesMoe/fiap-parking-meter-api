@@ -13,7 +13,7 @@ public interface SessionService {
 
     public ParkingSession create(ParkingSession parkingSession) throws ValidationException;
 
-    public ParkingSession getById(Long id);
+    public ParkingSession getById(String id);
 
     public List<ParkingSession> getByCustomer(String customerID);
 

@@ -21,6 +21,16 @@ import java.util.Map;
 public class NotificationAMQPConfiguration {
 
     @Bean
+    public RabbitAdmin createRabbitAdmin(ConnectionFactory con){
+        return new RabbitAdmin(con);
+    }
+
+    @Bean
+    public ApplicationListener<ApplicationReadyEvent> initAdmin(RabbitAdmin rabbitAdmin){
+        return event -> rabbitAdmin.initialize();
+    }
+
+    @Bean
     public Queue myQueue() {
         return new Queue("myQueue", true);
     }
@@ -37,35 +47,7 @@ public class NotificationAMQPConfiguration {
         return BindingBuilder.bind(myQueue).to(delayedExchange).with("myRoutingKey").noargs();
     }
 
-
-    //  @Bean
-    //    Queue myQueue() {
-    //        return QueueBuilder.durable("myQueue")
-    //                .withArgument("x-dead-letter-exchange", "sessionExpireExchange")
-    //                .withArgument("x-dead-letter-routing-key", "deadLetter")
-    //                .build();
-    //    }
-    //    @Bean
-    //    DirectExchange myExchange() {
-    //        return new DirectExchange("myExchange");
-    //    }
-    //
-    //    @Bean
-    //    Binding binding(Queue myQueue, DirectExchange myExchange) {
-    //        return BindingBuilder.bind(myQueue).to(myExchange).with("myRoutingKey");
-    //    }
-
-    @Bean
-    public RabbitAdmin createRabbitAdmin(ConnectionFactory con){
-        return new RabbitAdmin(con);
-    }
-    @Bean
-    public ApplicationListener<ApplicationReadyEvent> initAdmin(RabbitAdmin rabbitAdmin){
-        return event -> rabbitAdmin.initialize();
-    }
-
     //Os dois metodos a seguir possibilitam o envio de uma entidade em formato json nas mensagens. Par default eles so aceitavam bytes. Com as config seguintes, fica mais facil.
-
     @Bean
     public Jackson2JsonMessageConverter messageConverter(){
         ObjectMapper mapper = new ObjectMapper();
