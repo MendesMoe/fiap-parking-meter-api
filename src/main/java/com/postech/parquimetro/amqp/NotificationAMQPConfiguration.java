@@ -29,8 +29,7 @@ public class NotificationAMQPConfiguration {
     public CustomExchange delayedExchange() {
         Map<String, Object> args = new HashMap<>();
         args.put("x-delayed-type", "direct");
-        return new CustomExchange("myDelayedExchange", "direct", true, false, args);
-
+        return new CustomExchange("myDelayedExchange", "x-delayed-message", true, false, args);
     }
 
     @Bean
