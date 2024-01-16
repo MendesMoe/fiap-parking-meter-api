@@ -1,9 +1,11 @@
 package com.postech.parquimetro.controller;
 
+import com.postech.parquimetro.domain.enums.PaymentMethod;
 import com.postech.parquimetro.domain.enums.SessionType;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import com.postech.parquimetro.domain.session.ParkingSessionDTO;
 import com.postech.parquimetro.service.SessionService;
+import com.postech.parquimetro.service.TimeCalculatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.ValidationException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -23,6 +26,9 @@ public class SessionController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private TimeCalculatorService timeService;
 
     @GetMapping
     @Operation(summary = "Get the sessions list", responses = {
@@ -37,20 +43,29 @@ public class SessionController {
             @ApiResponse(description = "The session has been created", responseCode = "200")
     })
     public ResponseEntity create(@RequestBody ParkingSession parkingSession) throws ValidationException {
-        ParkingSession session = this.sessionService.create(parkingSession);
-        ParkingSessionDTO sessionDTO = session.convertToDTO();
 
-        if (session.getSessionType() == SessionType.FIXED_TIME && session.getEndSession() != null) {
-            //this.sendDelayedMessage(sessionDTO, 2000); definir o delay de acordo com o endSession se fixed ou com a proxima hora de FREE_TIME
+        if (parkingSession.getSessionType() == SessionType.FREE_TIME && parkingSession.getPaymentMethod() == PaymentMethod.PIX) {
+            return ResponseEntity.ok("ERROR"); // TODO return a exception because this payment method is not compatible with this session type
         }
 
-        //calcula menos 15 minutos antes do fim. Se a sessionEnd é 12h00, a gente vê que horas sao (por exemplo 11h10), calcula 15 minutos antes de 12h00 (11h45) e subtrai. 11h45 - 11h10 = 35 minutos e transforma em millisegundos
+        ParkingSession session = this.sessionService.create(parkingSession);
 
-        this.sendDelayedMessage(sessionDTO, 20000);
+        ParkingSessionDTO sessionDTO = session.convertToDTO();
+        // Se for fixo, ele calcula os 15 minutos com base no endSession e programa o envio do email 15 minutos antes
+        if (session.getSessionType() == SessionType.FIXED_TIME && session.getEndSession() != null) {
 
-        System.out.println("mensagem enviada, esperar 20 segundos e ela aparecera aqui => ");
+            //calcula menos 15 minutos antes do fim. Se a sessionEnd é 12h00, a gente vê que horas sao (por exemplo 11h10), calcula 15 minutos antes de 12h00 (11h45) e subtrai. 11h45 - 11h10 = 35 minutos e transforma em millisegundos
+            long delay = this.timeService.get15MinBeforeExpiration(sessionDTO);
+            this.sendDelayedMessage(sessionDTO, (int) delay);
+            System.out.println("mensagem enviada SessionType.FIXED_TIME para rabbitMQ");
+        }
 
-        // Agora aqui tem que chamar o serviço de envio de email passando o dto com as informacoes da sessao
+        // Se for free, ele calcula +45 minutos a partir da hora de criacao e programa um envio para esta hora
+        if (session.getSessionType() == SessionType.FREE_TIME && session.getEndSession() == null) {
+            long delay = this.timeService.get45MinInMilliseconds(sessionDTO);
+            this.sendDelayedMessage(sessionDTO, (int) delay);
+            System.out.println("mensagem enviada SessionType.FREE_TIME para rabbitMQ");
+        }
 
         return ResponseEntity.ok("session created");
     }
@@ -61,7 +76,6 @@ public class SessionController {
             return message;
         });
     }
-
 
     @GetMapping("/{customerID}")
     @Operation(summary = "Get all sessions for a customer", responses = {
@@ -87,5 +101,22 @@ public class SessionController {
     public ResponseEntity update(@RequestBody ParkingSession updateSession){
         this.sessionService.update(updateSession);
         return ResponseEntity.ok("updated session");
+    }
+
+    @GetMapping("/{sessionID}")
+    @Operation(summary = "End a session", responses = {
+            @ApiResponse(description = "The session was closed", responseCode = "200")
+    })
+    public ResponseEntity endSession(@PathVariable long sessionID) {
+        ParkingSession parkingSession = this.sessionService.getById(sessionID);
+        LocalDateTime now = LocalDateTime.now();
+        parkingSession.setEndSession(now);
+        parkingSession.setStatus(0);
+
+        ParkingSessionDTO sessionDTO = parkingSession.convertToDTO();
+
+        // TODO chama o serviço de envio de email para calcular o valor de fatura e enviar o recibo
+
+        return ResponseEntity.ok("session closed");
     }
 }
