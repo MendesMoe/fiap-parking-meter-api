@@ -40,8 +40,6 @@ public class EmailServiceImpl implements EmailService {
     @RabbitListener(queues = "myQueue")
     public void sendMail15MinutesBeforeExpiration(ParkingSessionDTO sessionDTO) {
 
-
-
         System.out.println("mensagem recebida e consumida no listenner = " + sessionDTO);
 
         //Check si la session est toujours active et cas de string pour int
