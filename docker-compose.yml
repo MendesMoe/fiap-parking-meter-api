@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  rabbitmq:
+   image: "rabbitmq:3.12-management"
+   ports:
+    - "5672:5672"
+    - "15672:15672"
+   hostname: "localhost-rabbit"
+   networks:
+    - parquimetro-network
+
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    hostname: "localhost-mongo"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - parquimetro-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+      - mongodb
+    ports:
+      - "8080:8080"
+    hostname: "localhost"
+    networks:
+      - parquimetro-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  parquimetro-network:
+    driver: bridge
+
