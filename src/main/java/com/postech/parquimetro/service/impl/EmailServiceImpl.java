@@ -1,6 +1,7 @@
 package com.postech.parquimetro.service.impl;
 
 import com.postech.parquimetro.domain.email.Email;
+import com.postech.parquimetro.domain.enums.SessionType;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import com.postech.parquimetro.domain.session.ParkingSessionDTO;
 import com.postech.parquimetro.repository.EmailRepository;
@@ -58,9 +59,14 @@ public class EmailServiceImpl implements EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("parquimetro.bjmmt@gmail.com");
             message.setTo(sessionDTO.customerMail());
+
+        if (sessionDTO.sessionType() == SessionType.FIXED_TIME) {
             message.setSubject("Sua sessao vai expirar em 15 minutos");
             message.setText("Bom dia! O seu tempo de estacionamento vai acabar em 15 minutos. Se você nao retirar o seu carro e cancelar a sessao, ela sera renovada por mais 1 hora");
-
+        } else {
+            message.setSubject("Sua sessao sera renovada em 15 minutos");
+            message.setText("Bom dia! O seu tempo de estacionamento completou 45 minutos. Se você nao retirar o seu carro e cancelar a sessao, ela sera renovada por mais 1 hora");
+        }
             // Se ela nao esta ativa, entao faz o envio do email e depois tem que update o endSession para 1 hora a mais e reprogramar o envio do email
             this.sendEmail(message);
             System.out.println("mail criado e enviado");
