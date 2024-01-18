@@ -113,6 +113,9 @@ public class SessionController {
         parkingSession.setEndSession(now);
         parkingSession.setStatus(0);
 
+        //TODO calcular o preço a pagar
+        parkingSession.setPrice(9.0);
+
         ParkingSessionDTO sessionDTO = parkingSession.convertToDTO();
 
         // TODO chama o serviço de envio de email para calcular o valor de fatura e enviar o recibo
