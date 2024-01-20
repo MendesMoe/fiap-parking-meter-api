@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    hostname: localhost-mongo
+    ports:
+      - "27017:27017"
+    restart: always
+
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rabbitmq:3.12-management
+    container_name: my-rabbitmq
+    hostname: localhost-rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always

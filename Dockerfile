@@ -10,6 +10,3 @@ RUN apt-get update -y \
 
 # Expose os ports padrão do RabbitMQ (5672 para amqp, 15672 para gerenciamento)
 EXPOSE 5672 15672
-
-#1 = docker build -t my-custom-rabbitmq .
-#2 = docker run -d --name my-rabbitmq -p 5672:5672 -p 15672:15672 my-custom-rabbitmq
