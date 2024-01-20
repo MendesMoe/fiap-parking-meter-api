@@ -29,11 +29,9 @@ public class Customer implements UserDetails {
     private String customerID;
 
     @NotNull
-    @JsonIgnore
     private String login;
 
     @NotNull
-    @JsonIgnore
     private String password;
     private String firstname;
 
@@ -51,7 +49,6 @@ public class Customer implements UserDetails {
     private PaymentMethod paymentPreference;
 
     @DBRef
-    @JsonIgnore
     private List<Vehicle> vehicles = new ArrayList<>();
 
     public List<Vehicle> getVehicles() {

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -45,10 +44,9 @@ public class CustomerController {
     @Operation(summary = "Create a new customer", responses = {
             @ApiResponse(description = "The new customer was created", responseCode = "200")
     })
-    public ResponseEntity newCustomer(@RequestBody Customer customer,UriComponentsBuilder uriBuilder){
+    public ResponseEntity newCustomer(@RequestBody Customer customer) {
         this.customerService.create(customer);
-      //  var uri = uriBuilder.path("customer/{customerID}").buildAndExpand(customer.getCustomerID()).toUri();
-        return ResponseEntity.ok("create ok");
+        return ResponseEntity.ok("customer created");
     }
 
     @PutMapping

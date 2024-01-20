@@ -46,12 +46,19 @@ public class CustomerServiceImpl implements CustomerService {
         var encryptedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encryptedPassword);
 
+        System.out.println("customer ----------> " + customer);
+
         // Get the vehicles in a reference before saving in db
-        if(customer.getVehicles() != null && !customer.getVehicles().isEmpty()) {
+        if(customer.getVehicles() != null) {
+
+            System.out.println("customer.getVehicles() ----------> " + customer.getVehicles());
+
             List<Vehicle> updatedVehicles = customer.getVehicles().stream()
                     .map(vehicle -> this.vehicleRepository.findById(vehicle.getLicenseplate())
                             .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with license plate: " + vehicle.getLicenseplate())))
                     .collect(Collectors.toList());
+
+            //TODO separar a criacao do customer da criacao do vehicle. Primeiro cria o customer e depois o vehicle pode ser criado com o ip do customer para o update
 
             customer.setVehicles(updatedVehicles);
         } else {
