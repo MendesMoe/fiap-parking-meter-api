@@ -14,4 +14,5 @@ public interface VehicleService {
 
     public Vehicle getById(String licenseplate);
 
+    public void deleteById(String id);
 }

@@ -34,4 +34,9 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(()-> new IllegalArgumentException("The Vehicle has not found"));
     }
 
+    @Override
+    public void deleteById(String id) {
+        this.repository.deleteById(id);
+    }
+
 }
