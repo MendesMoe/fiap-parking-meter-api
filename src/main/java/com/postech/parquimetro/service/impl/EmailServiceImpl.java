@@ -1,32 +1,25 @@
 package com.postech.parquimetro.service.impl;
 
-import com.postech.parquimetro.domain.email.Email;
 import com.postech.parquimetro.domain.enums.SessionType;
 import com.postech.parquimetro.domain.session.ParkingSession;
 import com.postech.parquimetro.domain.session.ParkingSessionDTO;
-import com.postech.parquimetro.repository.EmailRepository;
 import com.postech.parquimetro.service.EmailService;
-import com.postech.parquimetro.service.SessionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private final JavaMailSender emailSender;
 
-    @Autowired
-    private SessionService sessionService;
 
     public EmailServiceImpl(final JavaMailSender emailSender) {
         this.emailSender = emailSender;
@@ -36,10 +29,12 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail(SimpleMailMessage message) {
 
-        try{
+        try {
             emailSender.send(message);
         } catch (MailException e){
-            System.out.println("erro ao enviar o email no service sendEmail = " + e.getMessage());
+            log.error("error sending an email: {} ", e.getMessage());
+        } catch (Exception e){
+            log.error("unknown error sending email {}", e.getMessage());
         }
     }
 
@@ -69,31 +64,33 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    public void sendMailWithInvoice(ParkingSessionDTO sessionDTO){
+    public void sendMailWithInvoice(ParkingSession parkingSession, String durationFormatted){
+        log.debug("sending invoice to customer: [{}]", parkingSession.getCustomer().getCustomerID());
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("parquimetro.bjmmt@gmail.com");
-        message.setTo(sessionDTO.customerMail());
+        message.setTo(parkingSession.getCustomer().getEmail());
 
         message.setSubject("Sua sessão no Parquímetro foi encerrada");
 
         String text = String.format(
-                "Olá!\n\n" + //TODO add o nome do cliente para que o recibo seja mais personalizado
+                "Olá %s!\n\n" +
                         "Sua sessão no parquímetro foi encerrada com sucesso.\n" +
                         "Detalhes da sessão:\n" +
                         "- Tempo total: %s\n" +
                         "- Método de pagamento: %s\n" +
-                        "- Total da fatura: %s\n\n" +
+                        "- Total da fatura: R$ %s\n\n" +
                         "Agradecemos por utilizar nossos serviços e esperamos vê-lo novamente em breve.\n\n" +
                         "Atenciosamente,\n" +
                         "Equipe Parquímetro",
-                //sessionDTO.duration(), // TODO esperar merge do metodo endSession
-                sessionDTO.paymentMethod(),
-                sessionDTO.price()
+                parkingSession.getCustomer().getFirstname(),
+                durationFormatted,
+                parkingSession.getPaymentMethod().name(),
+                parkingSession.getPrice()
         );
 
         message.setText(text);
 
         this.sendEmail(message);
-        System.out.println("Email com recibo criado e enviado");
+        log.info("Email com recibo criado e enviado");
     }
 }

@@ -12,16 +12,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Vehicle {
 
     @Id
-    private String licenseplate;
-
+    @NotNull
+    private String licensePlate;
+    @NotNull
     private String name;
 
     @NotNull
     private String customerId;
 
-    public Vehicle(NewVehicleDTO vehicleDTO) {
+    public Vehicle(VehicleDTO vehicleDTO) {
         this.name = vehicleDTO.name();
-        this.licenseplate = vehicleDTO.licenseplate();
+        this.licensePlate = vehicleDTO.licensePlate();
         this.customerId = vehicleDTO.customerId();
     }
 }

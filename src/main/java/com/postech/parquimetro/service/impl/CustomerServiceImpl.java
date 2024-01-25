@@ -5,6 +5,7 @@ import com.postech.parquimetro.domain.vehicle.Vehicle;
 import com.postech.parquimetro.repository.CustomerRepository;
 import com.postech.parquimetro.repository.VehicleRepository;
 import com.postech.parquimetro.service.CustomerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -25,13 +27,20 @@ public class CustomerServiceImpl implements CustomerService {
     private VehicleRepository vehicleRepository;
 
     @Override
-    public List<Customer> getAll() {
-        return this.customerRepository.findAll();
+    public List<Customer> getAll(String name) {
+        if (name == null){
+            log.debug("list all customers");
+            return customerRepository.findAll();
+        } else
+        {
+            log.info("list customers by name");
+            return customerRepository.findAllByFirstnameContainingIgnoreCase(name);
+        }
     }
 
     @Override
     public Customer findByLogin(String login) {
-        return (Customer) this.customerRepository.findByLogin(login);
+        return this.customerRepository.findByLogin(login);
     }
 
     @Override
@@ -46,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
         var encryptedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encryptedPassword);
 
-        System.out.println("customer ----------> " + customer);
+        log.info("customer ----------> " + customer);
 
         // Get the vehicles in a reference before saving in db
         if(customer.getVehicles() != null) {
@@ -54,8 +63,8 @@ public class CustomerServiceImpl implements CustomerService {
             System.out.println("customer.getVehicles() ----------> " + customer.getVehicles());
 
             List<Vehicle> updatedVehicles = customer.getVehicles().stream()
-                    .map(vehicle -> this.vehicleRepository.findById(vehicle.getLicenseplate())
-                            .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with license plate: " + vehicle.getLicenseplate())))
+                    .map(vehicle -> this.vehicleRepository.findById(vehicle.getLicensePlate())
+                            .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with license plate: " + vehicle.getLicensePlate())))
                     .collect(Collectors.toList());
 
             //TODO separar a criacao do customer da criacao do vehicle. Primeiro cria o customer e depois o vehicle pode ser criado com o ip do customer para o update
@@ -70,10 +79,20 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer update(Customer updateCustomer) {
-        return this.customerRepository.save(updateCustomer);
+        try {
+            return this.customerRepository.save(updateCustomer);
+        } catch (Exception e) {
+            log.error("error updating customer: [{}]", updateCustomer.getCustomerID());
+            throw e;
+        }
     }
     @Override
     public void deleteById(String id){
-        this.customerRepository.deleteById(id);
+        try {
+            this.customerRepository.deleteById(id);
+        } catch (Exception e) {
+            log.error("error deleting customer: [{}]", id);
+            throw e;
+        }
     }
 }

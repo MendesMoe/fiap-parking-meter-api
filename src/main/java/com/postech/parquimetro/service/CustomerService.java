@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface CustomerService {
 
-    public List<Customer> getAll();
+    public List<Customer> getAll(String name);
 
     public Customer findByLogin(String login);
 

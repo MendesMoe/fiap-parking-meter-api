@@ -5,9 +5,6 @@ FROM maven:3.8.4-openjdk-17-slim AS build
 # Definindo o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Definindo o fuso horário do container
-ENV TZ=Europe/Paris
-
 # Copiando o arquivo POM e os arquivos fonte do projeto
 COPY pom.xml .
 COPY src ./src
