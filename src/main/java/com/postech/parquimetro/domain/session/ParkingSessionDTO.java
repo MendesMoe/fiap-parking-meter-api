@@ -15,6 +15,7 @@ public record ParkingSessionDTO( // Criei o DTO para que seja mais simples passa
         LocalDateTime startSession,
         LocalDateTime endSession,
         Double price,
-        Integer status
+        Integer status,
+        String duration
 ) {
 }

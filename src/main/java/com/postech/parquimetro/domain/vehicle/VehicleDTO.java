@@ -2,10 +2,10 @@ package com.postech.parquimetro.domain.vehicle;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record NewVehicleDTO(@NotBlank
+public record VehicleDTO(@NotBlank
                             String name,
-                            @NotBlank
-                            String licenseplate,
-                            @NotBlank
+                         @NotBlank
+                            String licensePlate,
+                         @NotBlank
                             String customerId) {
 }

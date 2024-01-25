@@ -12,7 +12,7 @@ public interface VehicleService {
 
     public Vehicle create(Vehicle vehicle);
 
-    public Vehicle getById(String licenseplate);
+    public Vehicle getById(String licensePlate);
 
-    public void deleteById(String id);
+    public void deleteByLicense(String licensePlate);
 }

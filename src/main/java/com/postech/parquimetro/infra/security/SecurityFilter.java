@@ -36,6 +36,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response); //faz o filtro e continua o codigo do controller. sem chamar outro filtro
+
+
     }
 
     //recupera o token que a requete enviou e testa para ver se é valido, senao erro.

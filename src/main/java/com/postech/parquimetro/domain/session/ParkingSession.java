@@ -49,13 +49,30 @@ public class ParkingSession {
                 this.id,
                 this.customer != null ? this.customer.getId() : null,
                 this.customer != null ? this.customer.getEmail() : null,
-                this.vehicle != null ? this.vehicle.getLicenseplate() : null,
+                this.vehicle != null ? this.vehicle.getLicensePlate() : null,
                 this.paymentMethod,
                 this.sessionType,
                 this.startSession,
                 this.endSession,
                 this.price,
-                this.status
+                this.status,
+                null
+        );
+    }
+
+    public ParkingSessionDTO convertToDTO(String duration) {
+        return new ParkingSessionDTO(
+                this.id,
+                this.customer != null ? this.customer.getId() : null,
+                this.customer != null ? this.customer.getEmail() : null,
+                this.vehicle != null ? this.vehicle.getLicensePlate() : null,
+                this.paymentMethod,
+                this.sessionType,
+                this.startSession,
+                this.endSession,
+                this.price,
+                this.status,
+                duration
         );
     }
 }

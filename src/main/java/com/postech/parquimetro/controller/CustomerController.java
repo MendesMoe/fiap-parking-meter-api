@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.ValidationException;
 import java.util.List;
 
 @RestController
@@ -28,8 +29,8 @@ public class CustomerController {
     @Operation(summary = "Get all customers", responses = {
             @ApiResponse(description = "List of all customers", responseCode = "200")
     })
-    public List<Customer> getAllCustomers(){
-        return customerService.getAll();
+    public List<Customer> getAllCustomers(@RequestParam(name = "name", required = false) String name) throws ValidationException {
+        return customerService.getAll(name);
     }
 
     @GetMapping("/{id}")
@@ -53,9 +54,9 @@ public class CustomerController {
     @Operation(summary = "Update all informations of a customer", responses = {
             @ApiResponse(description = "The customer was updated", responseCode = "200")
     })
-    public ResponseEntity update(@RequestBody Customer customer){
-        this.customerService.update(customer);
-        return ResponseEntity.ok("update ok");
+    public ResponseEntity <Customer> update(@RequestBody Customer customer){
+        customer = this.customerService.update(customer);
+        return ResponseEntity.ok(customer);
     }
 
     @DeleteMapping("/{id}")

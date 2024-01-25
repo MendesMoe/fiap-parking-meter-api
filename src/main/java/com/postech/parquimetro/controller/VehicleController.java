@@ -1,52 +1,36 @@
 package com.postech.parquimetro.controller;
 
-import com.postech.parquimetro.domain.customer.Customer;
-import com.postech.parquimetro.domain.vehicle.NewVehicleDTO;
 import com.postech.parquimetro.domain.vehicle.Vehicle;
-import com.postech.parquimetro.repository.CustomerRepository;
+import com.postech.parquimetro.domain.vehicle.VehicleDTO;
 import com.postech.parquimetro.service.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("vehicle")
+@Slf4j
 public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-
     @PostMapping
     @Operation(summary = "Create a new vehicle", responses = {
             @ApiResponse(description = "The vehicle has been created", responseCode = "201")
     })
-    public ResponseEntity create(@RequestBody NewVehicleDTO vehicleDTO){
+    public ResponseEntity<Vehicle> create(@RequestBody VehicleDTO vehicleDTO){
 
-        System.out.println("Veiculo DTO -----> " + vehicleDTO );
+        log.info("Veiculo DTO -----> {}" + vehicleDTO );
 
-        //Primeiro verifica se esse customer existe na db
-        Customer customer = this.customerRepository.findById(vehicleDTO.customerId())
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found with the ID: " + vehicleDTO.customerId()));
+       Vehicle vehicle = vehicleService.create(new Vehicle(vehicleDTO));
 
-        //Se nao existir, retorna uma exception
-        //Se existir cria o veiculo en db
-        Vehicle created = this.vehicleService.create(new Vehicle(vehicleDTO));
-
-        // Depois de criar o vehicle precisa atribui-lo ao customer
-        List<Vehicle> vehicleList = new ArrayList<>();
-        vehicleList.add(created);
-        customer.setVehicles(vehicleList);
-        this.customerRepository.save(customer);
-
-        return ResponseEntity.ok("vehicle created");
+        return ResponseEntity.ok(vehicle);
     }
 
     @GetMapping
@@ -71,10 +55,10 @@ public class VehicleController {
     @Operation(summary = "Delete one vehicle by license-plate", responses = {
             @ApiResponse(description = "The vehicle was deleted", responseCode = "200")
     })
-    public ResponseEntity deleteById(@PathVariable String license){
+    public ResponseEntity deleteByLicense(@PathVariable String license){
 
         System.out.println("license-plate ------> " + license);
-        this.vehicleService.deleteById(license);
+        this.vehicleService.deleteByLicense(license);
         return ResponseEntity.ok("delete ok");
     }
 }
