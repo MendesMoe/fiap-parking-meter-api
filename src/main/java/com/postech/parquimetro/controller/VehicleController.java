@@ -32,19 +32,19 @@ public class VehicleController {
 
         System.out.println("Veiculo DTO -----> " + vehicleDTO );
 
-        Vehicle created = this.vehicleService.create(new Vehicle(vehicleDTO.name(), vehicleDTO.licenseplate()));
-
-        List<Vehicle> vehicleList = new ArrayList<>();
-        vehicleList.add(created);
-
-        // Depois de criar o vehicle precisa atribui-lo a un customer
+        //Primeiro verifica se esse customer existe na db
         Customer customer = this.customerRepository.findById(vehicleDTO.customerId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with the ID: " + vehicleDTO.customerId()));
 
-        System.out.println("Veiculo criado -----> " + created + " Customer updated ----> " + customer);
+        //Se nao existir, retorna uma exception
+        //Se existir cria o veiculo en db
+        Vehicle created = this.vehicleService.create(new Vehicle(vehicleDTO));
 
+        // Depois de criar o vehicle precisa atribui-lo ao customer
+        List<Vehicle> vehicleList = new ArrayList<>();
+        vehicleList.add(created);
         customer.setVehicles(vehicleList);
-        this.customerRepository.save(customer); //or update
+        this.customerRepository.save(customer);
 
         return ResponseEntity.ok("vehicle created");
     }
@@ -59,22 +59,22 @@ public class VehicleController {
     }
 
     @GetMapping("/{licenseplate}")
-    @Operation(summary = "Get one vehicle with his licenseplate", responses = {
-            @ApiResponse(description = "The vehicle with this licenseplate", responseCode = "200")
+    @Operation(summary = "Get one vehicle with his license-plate", responses = {
+            @ApiResponse(description = "The vehicle with this license-plate", responseCode = "200")
     })
     public Vehicle getById(@PathVariable String licenseplate){
         return this.vehicleService.getById(licenseplate);
     }
 
 
-    @DeleteMapping("/{licenseplate}")
-    @Operation(summary = "Delete one vehicle by licenseplate", responses = {
+    @DeleteMapping("/{license}")
+    @Operation(summary = "Delete one vehicle by license-plate", responses = {
             @ApiResponse(description = "The vehicle was deleted", responseCode = "200")
     })
-    public ResponseEntity deleteById(@PathVariable String licenseplate){
+    public ResponseEntity deleteById(@PathVariable String license){
 
-        System.out.println("licenseplate ------> " + licenseplate);
-        this.vehicleService.deleteById(licenseplate);
+        System.out.println("license-plate ------> " + license);
+        this.vehicleService.deleteById(license);
         return ResponseEntity.ok("delete ok");
     }
 }
