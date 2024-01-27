@@ -10,6 +10,8 @@ A API permite que condutores se registrem no sistema, fornecendo dados pessoais 
 ### Registro de Forma de Pagamento
 Antes de utilizar o sistema, é necessário que o condutor registre sua forma de pagamento preferida. A API suporta várias formas de pagamento, incluindo cartões de crédito e débito, proporcionando flexibilidade e comodidade aos usuários.
 
+### Gerenciamento de sessoes de estacionamento e envio de notificacoes
+O utilizador pode iniciar uma sessao de estacionamento com o tempo pré-determinado ou livre. Ele podera receber notificacoes para acompanhar o tempo restante até o fim de sue sessao. As notificacoes serao enviadas por e-mail.
 
 ## Tecnologias Utilizadas
 
@@ -35,33 +37,18 @@ Este projeto foi desenvolvido com as seguintes tecnologias e bibliotecas:
 
 ## Como Executar
 
-Banco de dados MongoDB com Docker sem usuario nem senha:
+Nos utilizamos Docker e criamos um dockerfile para gerenciar os containers.
+
+Uma vez o projeto baixado do github e com docker desktop instalado na maquina, execute:
 ````shell
-docker pull mongo
-docker run -d --name mongodb -p 27017:27017 mongo
+docker-compose up --build
 ````
-Verifique que a sua imagem baixou e execute
+Verifique que os tres containers foram baixados
 ````shell
 docker ps
 ````
-Verifique o nome do container e pode lancar :
-````shell
-mongo --host localhost --port 27017
-````
-Quando a conexao for feita você pode visualisar as tables e criar a 'parquimetro'
-````shell
-show databases
-use parquimetro
-````
+3 imagens devem aparecer : spring-app, mongodb e my-rabbitmq
 
-Ainda com Docker, podemos lançar RabbitMQ
-````shell
-docker build -t my-custom-rabbitmq .
-````
-Ensuite executer avec
-`````shell
-docker run -d --name my-rabbitmq -p 5672:5672 -p 15672:15672 my-custom-rabbitmq
-`````
 Para ver o serviço rodando em uma interface, acessar a porta e entrar "guest" para usuario e senha
 ````shell
 http://localhost:5672
@@ -89,3 +76,4 @@ As rotas "/login" e "/customer" não requerem token para uso. Abaixo estão os p
 3. **Uso do Token**:
    - Utilize o token fornecido durante o login para acessar as demais rotas da API. O token deve ser incluído no cabeçalho da requisição.
     
+4. Utilize o token (Baerer token) para criar um veiculo `/vehicle` e, em seguida, uma sessao de estacionamento `/session`.
