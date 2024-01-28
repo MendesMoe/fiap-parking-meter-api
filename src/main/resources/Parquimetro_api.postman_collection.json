@@ -1,0 +1,475 @@
+{
+	"info": {
+		"_postman_id": "dfab0690-a587-4948-a6c3-57265de98072",
+		"name": "Fiap - Tech Challenge - API Parquímetro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12858581"
+	},
+	"item": [
+		{
+			"name": "0 - Utils",
+			"item": [
+				{
+					"name": "0.1 - Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"// Extrai o valor da propriedade token do corpo da resposta\r",
+									"var token = pm.response.json().token;\r",
+									"// Atualiza o valor da variável token com o valor extraído\r",
+									"var listaVariaveis = pm.collectionVariables;\r",
+									"\r",
+									"listaVariaveis.set(\"token\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"bruno-teste\",\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1 - Customer",
+			"item": [
+				{
+					"name": "1.1 - Create a new customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"usuario-teste\",\r\n    \"password\": \"12345\",\r\n    \"firstname\": \"usuario\",\r\n    \"lastname\": \"teste\",\r\n    \"address1\": \"av legal, 123\",\r\n    \"address2\": \"vila legal\",\r\n    \"email\": \"emailvalido@hotmail.com\",\r\n    \"phone\": \"11999991234\",\r\n    \"paymentPreference\": \"CREDIT_CARD\",\r\n    \"vehicles\":[]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 - Get all customers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 - Get one customer by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/6593ece54c108e30efc86efa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"6593ece54c108e30efc86efa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.4 - Delete a customer by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/65b6e0724f780a090dfdd49b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"65b6e0724f780a090dfdd49b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.5 - Update customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"customerID\": \"65b6e0724f780a090dfdd49b\",\r\n        \"login\": \"novologin\",\r\n        \"password\": \"12345\",\r\n        \"firstname\": \"novo\",\r\n        \"lastname\": \"login\",\r\n        \"address1\": \"novo endereco\",\r\n        \"address2\": \"\",\r\n        \"email\": \"novoemail@gmail.com\",\r\n        \"phone\": \"11999991234\",\r\n        \"paymentPreference\": \"CREDIT_CARD\",\r\n        \"vehicles\": [{\r\n            \"licensePlate\": \"ABC1234\"\r\n        }\r\n        ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2 - Vehicle",
+			"item": [
+				{
+					"name": "2.1 - Create a new vehicle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"licensePlate\": \"ABC1234\",\r\n    \"name\": \"VW Fusca\",\r\n    \"customerId\":\"6593ece54c108e30efc86efa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/vehicle",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vehicle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 - Get all vehicles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicnVubyIsImlzcyI6IkFQSSBwYXJxdWltZXRybyIsImV4cCI6MTcwNDI4MjgwNH0.H-C3jPNdQToahUMrfWKRp3kFwm80fh8h5OAJxphbJ-8",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/vehicle",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vehicle"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicnVubyIsImlzcyI6IkFQSSBwYXJxdWltZXRybyIsImV4cCI6MTcwNDI4MjU5M30.mDFWbFObT1bFpY2qz1T5C0sPwlj6KR20-IJJNhRNFHo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.3 - Get one vehicle with his licenceplate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/vehicle/ABC1234",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"vehicle",
+								"ABC1234"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3 - Session",
+			"item": [
+				{
+					"name": "3.1 - Create session",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": \r\n        {\r\n        \"customerID\": \"65b6be40ea2bac1a2628b9ea\"\r\n        },\r\n    \"vehicle\":\r\n        {\r\n            \"licensePlate\": \"ABC1234\"\r\n        },\r\n    \"paymentMethod\": \"PIX\",\r\n    \"sessionType\": \"FIXED_TIME\",\r\n    \"startSession\": \"2024-01-28T15:26:00\",\r\n    \"endSession\": \"2024-01-28T20:26:00\",\r\n    \"price\": null,\r\n    \"status\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/session",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 - Delete session",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/session/659d4f246a2e2016bd65aa8f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"session",
+								"659d4f246a2e2016bd65aa8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 - Update session",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"658d8eb82c1cec4ab3722624\",\n        \"customer\": {\n            \"customerID\": \"658c0a2dae393c1362835b31\"\n        },\n        \"vehicle\": {\n            \"licensePlate\": \"ABC1234\",\n            \"name\": \"aixan\"\n        },\n        \"paymentMethod\": \"CREDIT_CARD\",\n        \"sessionType\": \"FIXED_TIME\",\n        \"startSession\": \"2023-12-28T08:00:00\",\n        \"endSession\": null,\n        \"price\": null,\n        \"status\": 0\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/session",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.4 - End session",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/session/65b6de1d31e8377d58e6fc71",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"session",
+								"65b6de1d31e8377d58e6fc71"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
