@@ -43,19 +43,16 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    // Methode qui va écouter la queue MyQueue et a chaque fois qu'un message sera arrivé le DTO sera analysé et un mail sera envoyé au client
+    // Methode que vai escutar a queue MyQueue e fazer o envio da notificacao por email
     @RabbitListener(queues = "myQueue")
     public void sendMail15MinutesBeforeExpiration(ParkingSessionDTO sessionDTO) {
 
         System.out.println("mensagem recebida e consumida no listenner = " + sessionDTO);
 
-        //Check si la session est toujours active et cas de string pour int
-        //ParkingSession parkingSession = this.sessionService.getById(sessionDTO.id()); //TODO aqui estou com problema para recuperar a session pelo ID, quer Long e nao String ?
-        //
-        //        if (parkingSession.getStatus() == 0) {
-        //            //TODO nao envia o email porque a sessao ja foi encerrada
-        //        } else {
-
+        //check se a session ainda nao foi desativada pelo utilisador. Se ativa, ela tera o status = 1
+        if (sessionDTO.status() == 0) {
+            //TODO nao envia o email porque a sessao ja foi encerrada
+        } else {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("parquimetro.bjmmt@gmail.com");
             message.setTo(sessionDTO.customerMail());
@@ -67,9 +64,36 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject("Sua sessao sera renovada em 15 minutos");
             message.setText("Bom dia! O seu tempo de estacionamento completou 45 minutos. Se você nao retirar o seu carro e cancelar a sessao, ela sera renovada por mais 1 hora");
         }
-            // Se ela nao esta ativa, entao faz o envio do email e depois tem que update o endSession para 1 hora a mais e reprogramar o envio do email
             this.sendEmail(message);
-            System.out.println("mail criado e enviado");
-        //}
+            System.out.println("Email before15minutes criado e enviado");
+        }
+    }
+
+    public void sendMailWithInvoice(ParkingSessionDTO sessionDTO){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("parquimetro.bjmmt@gmail.com");
+        message.setTo(sessionDTO.customerMail());
+
+        message.setSubject("Sua sessão no Parquímetro foi encerrada");
+
+        String text = String.format(
+                "Olá!\n\n" + //TODO add o nome do cliente para que o recibo seja mais personalizado
+                        "Sua sessão no parquímetro foi encerrada com sucesso.\n" +
+                        "Detalhes da sessão:\n" +
+                        "- Tempo total: %s\n" +
+                        "- Método de pagamento: %s\n" +
+                        "- Total da fatura: %s\n\n" +
+                        "Agradecemos por utilizar nossos serviços e esperamos vê-lo novamente em breve.\n\n" +
+                        "Atenciosamente,\n" +
+                        "Equipe Parquímetro",
+                //sessionDTO.duration(), // TODO esperar merge do metodo endSession
+                sessionDTO.paymentMethod(),
+                sessionDTO.price()
+        );
+
+        message.setText(text);
+
+        this.sendEmail(message);
+        System.out.println("Email com recibo criado e enviado");
     }
 }
