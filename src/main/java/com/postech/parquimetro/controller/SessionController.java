@@ -5,6 +5,7 @@ import com.postech.parquimetro.domain.session.ParkingSessionDTO;
 import com.postech.parquimetro.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +35,16 @@ public class SessionController {
     @Operation(summary = "Create a new session for a customer and a vehicle", responses = {
             @ApiResponse(description = "The session has been created", responseCode = "200")
     })
-    public ResponseEntity<ParkingSessionDTO> create(@RequestBody ParkingSession parkingSession) throws ValidationException {
-        ParkingSessionDTO sessionDTO = sessionService.create(parkingSession);
-        return ResponseEntity.ok(sessionDTO);
+    public ResponseEntity<ParkingSessionDTO> create(@RequestBody @Valid ParkingSession parkingSession) throws ValidationException {
+		try {
+			ParkingSessionDTO sessionDTO = sessionService.create(parkingSession);
+			return ResponseEntity.ok(sessionDTO);
+		} catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException
+                    ("Erro ao criar sessão: " + e.getMessage());
+        }
     }
-
 
     @GetMapping("/{customerID}")
     @Operation(summary = "Get all sessions for a customer", responses = {
@@ -61,10 +67,15 @@ public class SessionController {
     @Operation(summary = "Update one session", responses = {
             @ApiResponse(description = "The session was updated", responseCode = "200")
     })
-    public ResponseEntity update(@RequestBody ParkingSession updateSession){
-        this.sessionService.update(updateSession);
-        return ResponseEntity.ok("updated session");
-    }
+    public ResponseEntity update(@RequestBody @Valid ParkingSession updateSession){
+        try {
+			this.sessionService.update(updateSession);
+			return ResponseEntity.ok("updated session");
+		} catch (Exception e) {
+			e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+	}
 
     @PatchMapping("/{sessionID}")
     @Operation(summary = "End a session", responses = {

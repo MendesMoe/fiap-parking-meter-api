@@ -4,6 +4,7 @@ import com.postech.parquimetro.domain.customer.Customer;
 import com.postech.parquimetro.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,18 +46,29 @@ public class CustomerController {
     @Operation(summary = "Create a new customer", responses = {
             @ApiResponse(description = "The new customer was created", responseCode = "200")
     })
-    public ResponseEntity newCustomer(@RequestBody Customer customer) {
-        this.customerService.create(customer);
-        return ResponseEntity.ok("customer created");
+    public ResponseEntity newCustomer(@RequestBody @Valid Customer customer) {
+        try {
+            this.customerService.create(customer);
+            return ResponseEntity.ok("customer created");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping
     @Operation(summary = "Update all informations of a customer", responses = {
             @ApiResponse(description = "The customer was updated", responseCode = "200")
     })
-    public ResponseEntity <Customer> update(@RequestBody Customer customer){
-        customer = this.customerService.update(customer);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity <Customer> update(@RequestBody @Valid Customer customer){
+		try {
+			customer = this.customerService.update(customer);
+			return ResponseEntity.ok(customer);
+		} catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException
+                    ("Erro ao atualizar cliente: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

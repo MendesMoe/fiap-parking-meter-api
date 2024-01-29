@@ -35,11 +35,9 @@ public class AuthenticationController {
             var authToken = new UsernamePasswordAuthenticationToken(data.login(), data.password());
             var authentication = manager.authenticate(authToken);
             var token = tokenService.newToken((Customer) authentication.getPrincipal());
-
-            return ResponseEntity.ok(new DataTokenJWT(token));
+			return ResponseEntity.ok(new DataTokenJWT(token));
         } catch (Exception e) {
-
-            e.printStackTrace();
+			e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

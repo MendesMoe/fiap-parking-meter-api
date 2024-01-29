@@ -5,6 +5,7 @@ import com.postech.parquimetro.domain.vehicle.VehicleDTO;
 import com.postech.parquimetro.service.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,18 @@ public class VehicleController {
     @Operation(summary = "Create a new vehicle", responses = {
             @ApiResponse(description = "The vehicle has been created", responseCode = "201")
     })
-    public ResponseEntity<Vehicle> create(@RequestBody VehicleDTO vehicleDTO){
-
-        log.info("Veiculo DTO -----> {}" + vehicleDTO );
-
-       Vehicle vehicle = vehicleService.create(new Vehicle(vehicleDTO));
-
-        return ResponseEntity.ok(vehicle);
-    }
+    public ResponseEntity<Vehicle> create(@RequestBody @Valid VehicleDTO vehicleDTO){
+		try {
+			log.info("Veiculo DTO -----> {}" + vehicleDTO );
+			Vehicle vehicle = vehicleService.create(new Vehicle(vehicleDTO));
+			return ResponseEntity.ok(vehicle);
+		} catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException
+                    ("Erro ao criar veículo: " + e.getMessage());
+        }
+		
+	}
 
     @GetMapping
     @Operation(summary = "Get all vehicles", responses = {

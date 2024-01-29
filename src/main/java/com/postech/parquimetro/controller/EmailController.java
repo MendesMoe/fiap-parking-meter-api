@@ -26,11 +26,16 @@ public class EmailController {
             @ApiResponse(description = "Email message detail object", responseCode = "201")
     })
     public ResponseEntity sendingEmail(@RequestBody String toAddressMail) {
-        // Email email = new Email();
-        //BeanUtils.copyProperties(emailDto, email);
+		try {
+			// Email email = new Email();
+			//BeanUtils.copyProperties(emailDto, email);
 
-        System.out.println("email deve ser enviado para : " + toAddressMail);
-        //emailService.sendEmail(toAddressMail);
-        return ResponseEntity.ok("email enviado");
+			System.out.println("email deve ser enviado para : " + toAddressMail);
+			//emailService.sendEmail(toAddressMail);
+			return ResponseEntity.ok("email enviado");
+		} catch (Exception e) {
+			e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
