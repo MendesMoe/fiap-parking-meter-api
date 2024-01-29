@@ -41,7 +41,7 @@ public class VehicleServiceImpl implements VehicleService {
         List<Vehicle> vehicleList = customer.getVehicles();
         vehicleList.add(created);
         customer.setVehicles(vehicleList);
-        //this.customerRepository.save(customer);
+        this.customerRepository.save(customer);
 
         // junto com as informacoes do novo carro, eu preciso do id cliente para fazer a relacao.
         return created;
