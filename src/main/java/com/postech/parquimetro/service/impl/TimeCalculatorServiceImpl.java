@@ -20,13 +20,9 @@ public class TimeCalculatorServiceImpl implements TimeCalculatorService {
     public long get15MinBeforeExpiration(ParkingSessionDTO sessionDTO) {
 
         LocalDateTime endSessionMinus15 = sessionDTO.endSession().minusMinutes(15);
-        LocalDateTime now = LocalDateTime.now(); //TODO trocar para "America/Sao_Paulo" no Dockerfile
+        LocalDateTime now = LocalDateTime.now();
 
         log.info("NOW ----> " + now + " endSessionMinus15 ----> " + endSessionMinus15);
-
-        if (endSessionMinus15.isBefore(now)) {
-            //TODO return an exception porque a hora do envio nao pode ser anterior a hora atual
-        }
 
         // Calculando a diferença em milissegundos
         long delayInMillis = Duration.between(now, endSessionMinus15).toMillis();
